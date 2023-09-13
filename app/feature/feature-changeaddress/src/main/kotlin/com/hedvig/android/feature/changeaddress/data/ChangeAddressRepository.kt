@@ -1,6 +1,7 @@
 package com.hedvig.android.feature.changeaddress.data
 
 import CreateQuoteInput
+import HousingType
 import arrow.core.Either
 import arrow.core.raise.either
 import com.apollographql.apollo3.ApolloClient
@@ -130,7 +131,7 @@ private fun MoveIntentCreateMutation.Data.MoveIntentCreate.MoveIntent.toMoveInte
 
 private fun MoveIntentRequestMutation.Data.MoveIntentRequest.MoveIntent.toMoveQuotes() = quotes.map { quote ->
   MoveQuote(
-    insuranceName = "TODO Olycksfallsförsäkring",
+    insuranceName = quote.termsVersion.id,
     moveIntentId = MoveIntentId(id),
     address = Address(
       id = AddressId(quote.address.id),

@@ -40,7 +40,7 @@ internal class ChangeAddressViewModel(
           _uiState.update {
             it.copy(
               moveIntentId = moveIntent.id,
-              numberCoInsured = ValidatedInput(moveIntent.numberCoInsured),
+              numberCoInsured = ValidatedInput(moveIntent.numberCoInsured.toString()),
               moveFromAddressId = moveIntent.currentHomeAddresses.firstOrNull()?.id,
               isLoading = false,
             )
@@ -62,7 +62,7 @@ internal class ChangeAddressViewModel(
     _uiState.update { it.copy(squareMeters = ValidatedInput(squareMeters)) }
   }
 
-  fun onCoInsuredChanged(coInsured: Int) {
+  fun onCoInsuredChanged(coInsured: String) {
     _uiState.update { it.copy(numberCoInsured = ValidatedInput(coInsured)) }
   }
 
@@ -107,7 +107,7 @@ internal class ChangeAddressViewModel(
       it.copy(
         quotes = it.quotes.replace(
           newValue = moveQuote.copy(isExpanded = !moveQuote.isExpanded),
-          block = { it.moveIntentId == moveQuote.moveIntentId },
+          block = { it.termsVersion == moveQuote.termsVersion },
         ),
       )
     }
@@ -180,7 +180,7 @@ private fun ChangeAddressUiState.toCreateQuoteInput() = CreateQuoteInput(
   ),
   moveFromAddressId = moveFromAddressId!!,
   movingDate = movingDate.input!!,
-  numberCoInsured = numberCoInsured.input!!,
+  numberCoInsured = numberCoInsured.input!!.toInt(),
   squareMeters = squareMeters.input!!.toInt(),
   apartmentOwnerType = housingType.input!!,
   isStudent = false,

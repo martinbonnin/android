@@ -33,12 +33,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.hedvig.android.core.designsystem.component.button.LargeContainedButton
+import com.hedvig.android.core.designsystem.component.button.HedvigContainedButton
 import com.hedvig.android.core.designsystem.component.card.HedvigCard
 import com.hedvig.android.core.designsystem.component.datepicker.HedvigDatePicker
 import com.hedvig.android.core.designsystem.component.textfield.HedvigTextField
 import com.hedvig.android.core.designsystem.material3.onWarningContainer
-import com.hedvig.android.core.designsystem.material3.squircleMedium
 import com.hedvig.android.core.designsystem.material3.warningContainer
 import com.hedvig.android.core.designsystem.material3.warningElement
 import com.hedvig.android.core.designsystem.preview.HedvigPreview
@@ -49,6 +48,7 @@ import com.hedvig.android.core.ui.dialog.ErrorDialog
 import com.hedvig.android.core.ui.scaffold.HedvigScaffold
 import com.hedvig.android.feature.changeaddress.ChangeAddressUiState
 import com.hedvig.android.feature.changeaddress.ChangeAddressViewModel
+import com.hedvig.android.feature.changeaddress.ui.AddressInfoCard
 import hedvig.resources.R
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -90,7 +90,7 @@ private fun ChangeAddressEnterNewScreen(
   onStreetChanged: (String) -> Unit,
   onPostalCodeChanged: (String) -> Unit,
   onSquareMetersChanged: (String) -> Unit,
-  onCoInsuredChanged: (Int) -> Unit,
+  onCoInsuredChanged: (String) -> Unit,
   onMoveDateSelected: (LocalDate) -> Unit,
   onSaveNewAddress: () -> Unit,
 ) {
@@ -113,13 +113,13 @@ private fun ChangeAddressEnterNewScreen(
     Spacer(modifier = Modifier.height(48.dp))
     Text(
       text = stringResource(id = R.string.CHANGE_ADDRESS_ENTER_NEW_ADDRESS_TITLE),
-      style = MaterialTheme.typography.headlineSmall,
+      style = MaterialTheme.typography.headlineMedium,
       textAlign = TextAlign.Center,
       modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 16.dp),
     )
-    Spacer(modifier = Modifier.height(64.dp))
+    Spacer(modifier = Modifier.weight(1f))
     AddressTextField(
       street = uiState.street,
       onStreetChanged = onStreetChanged,
@@ -149,15 +149,18 @@ private fun ChangeAddressEnterNewScreen(
       uiState = uiState,
       modifier = Modifier.padding(horizontal = 16.dp),
     )
-    Spacer(modifier = Modifier.height(32.dp))
-    Spacer(modifier = Modifier.weight(1f))
-    LargeContainedButton(
-      onClick = onSaveNewAddress,
-      shape = MaterialTheme.shapes.squircleMedium,
+    Spacer(modifier = Modifier.height(16.dp))
+    AddressInfoCard(
+      text = stringResource(id = R.string.CHANGE_ADDRESS_COVERAGE_INFO_TEXT),
       modifier = Modifier.padding(horizontal = 16.dp),
-    ) {
-      Text(stringResource(R.string.SAVE_AND_CONTINUE_BUTTON_LABEL))
-    }
+    )
+    Spacer(modifier = Modifier.height(16.dp))
+    HedvigContainedButton(
+      text = stringResource(R.string.SAVE_AND_CONTINUE_BUTTON_LABEL),
+      onClick = onSaveNewAddress,
+      modifier = Modifier.padding(horizontal = 16.dp),
+      isLoading = uiState.isLoading,
+    )
     Spacer(Modifier.height(16.dp))
   }
 }
@@ -175,6 +178,7 @@ private fun AddressTextField(
     label = {
       Text(stringResource(R.string.CHANGE_ADDRESS_NEW_ADDRESS_LABEL))
     },
+    withNewDesign = true,
     modifier = modifier.fillMaxWidth(),
   )
 }
@@ -195,6 +199,7 @@ private fun PostalCodeTextField(
     keyboardOptions = KeyboardOptions(
       keyboardType = KeyboardType.Number,
     ),
+    withNewDesign = true,
     modifier = modifier.fillMaxWidth(),
   )
 }
@@ -215,14 +220,15 @@ private fun LivingSpaceTextField(
     keyboardOptions = KeyboardOptions(
       keyboardType = KeyboardType.Number,
     ),
+    withNewDesign = true,
     modifier = modifier.fillMaxWidth(),
   )
 }
 
 @Composable
 private fun NumberOfCoInsuredTextField(
-  numberCoInsured: ValidatedInput<Int?>,
-  onCoInsuredChanged: (Int) -> Unit,
+  numberCoInsured: ValidatedInput<String?>,
+  onCoInsuredChanged: (String) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   HedvigTextField(
@@ -231,7 +237,7 @@ private fun NumberOfCoInsuredTextField(
     } else {
       "1"
     },
-    onValueChange = { onCoInsuredChanged(it.toInt()) },
+    onValueChange = { onCoInsuredChanged(it) },
     errorText = numberCoInsured.errorMessageRes?.let { stringResource(it) },
     label = {
       Text(stringResource(R.string.CHANGE_ADDRESS_CO_INSURED_LABEL))
@@ -239,6 +245,7 @@ private fun NumberOfCoInsuredTextField(
     keyboardOptions = KeyboardOptions(
       keyboardType = KeyboardType.Number,
     ),
+    withNewDesign = true,
     modifier = modifier.fillMaxWidth(),
   )
 }
